@@ -52,7 +52,7 @@ export class UserClient {
         id: user.id,
         appId: user.profile.api_app_id || null,
         botId: user.profile.bot_id || null,
-        name: user.is_bot ? user.profile.real_name : user.profile.display_name,
+        name: (user.profile.display_name === '') ? user.profile.real_name : user.profile.display_name,
         type: user.is_bot
           ? 3 // Bot
           : user.deleted
@@ -105,7 +105,7 @@ export class UserClient {
       id: result.user.id,
       appId: result.user.profile.api_app_id || null,
       botId: result.user.profile.bot_id || null,
-      name: result.user.is_bot
+      name: result.user.profile.display_name === ''
         ? result.user.profile.real_name
         : result.user.profile.display_name,
       type: result.user.deleted ? 2 : 1,

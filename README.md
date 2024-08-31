@@ -31,7 +31,7 @@ MSDは(Migrate from Slack to Discord)の略称
 
 ## 使用方法
 
-[初回設定](./docs/initial-setting.md)でBotなどの設定を完了後、下記のコマンドを順次実行して移行します  
+[初回設定](./docs/init.md)でBotなどの設定を完了後、下記のコマンドを順次実行して移行します  
 
 ```zsh
 # 作業ディレクトリ初期化と移行用のSQLiteファイル作成を行う

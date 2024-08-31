@@ -169,9 +169,6 @@ export class MessageClient {
         maxFileSize = 100000000
       }
 
-      // Pagination message
-      const take = 100
-      let skip = 0
       const total = await this.client.message.count({
         where: {
           // Get only undeployed message for redeploy
@@ -179,22 +176,17 @@ export class MessageClient {
           channelDeployId: channel.deployId,
         },
       })
-      while (skip < total) {
-        const messages = await this.client.message.findMany({
-          take: take,
-          skip: skip,
-          where: {
-            deployId: { equals: null },
-            channelDeployId: channel.deployId,
-          },
-          orderBy: {
-            timestamp: "asc",
-          },
-        })
 
-        await this.deployManyMessage(channelManager, messages, maxFileSize)
-        skip += take
-      }
+      const messages = await this.client.message.findMany({
+        where: {
+          deployId: { equals: null },
+          channelDeployId: channel.deployId,
+        },
+        orderBy: {
+          timestamp: "asc",
+        },
+      })
+      await this.deployManyMessage(channelManager, messages, maxFileSize)
     }
   }
 
@@ -369,28 +361,21 @@ export class MessageClient {
         )
           throw new Error(`Failed to get channel manager of ${channel.id}`)
 
-        // Pagination message
-        const take = 100
-        let skip = 0
         const total = await this.client.message.count({
           where: {
             channelDeployId: channel.deployId,
           },
         })
-        while (skip < total) {
-          const messages = await this.client.message.findMany({
-            take: take,
-            skip: skip,
-            where: {
-              channelDeployId: channel.deployId,
-            },
-            orderBy: {
-              timestamp: "asc",
-            },
-          })
-          await this.destroyManyMessage(channelManager, messages)
-          skip += take
-        }
+
+        const messages = await this.client.message.findMany({
+          where: {
+            channelDeployId: channel.deployId,
+          },
+          orderBy: {
+            timestamp: "asc",
+          },
+        })
+        await this.destroyManyMessage(channelManager, messages)
       })
     )
   }

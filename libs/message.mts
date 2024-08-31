@@ -326,12 +326,10 @@ export class MessageClient {
       files: uploadFileUrls,
     })
 
-    // Update message with file
-    const newMessage = (() => message)()
-    // Add 2 micro second to prevent duplicate timestamp
-    newMessage.timestamp = String(parseFloat(newMessage.timestamp) + 0.000002)
-    newMessage.deployId = sendMessage.id
-    await this.updateMessage(newMessage)
+    if (!message.content) {
+      message.deployId = sendMessage.id
+      await this.updateMessage(message)
+    }
 
     // Deploy pinned item
     if (!message.content && message.isPinned) {
